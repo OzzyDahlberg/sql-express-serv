@@ -13,7 +13,7 @@ const dbpath = path.resolve(__dirname, "../blog.db");
 const db = new sqlite3.Database(dbpath);
 
 app.get("/", (req, res) => {
-    res.json("welcome to the blog API - SQL version...")
+    res.json(`welcome to the blog API - SQL version... `)
 });
 
 app.get("/posts", (req, res) => {
@@ -36,6 +36,33 @@ app.get("/comments", (req, res) => {
 });
 app.get("/users", (req, res) => {
     db.all("SELECT * FROM users", (err, rows) => {
+        if (err) {
+            res.status(500).json({  error: err.message  })
+        }
+        console.log("data fetched", rows);
+        res.json(rows);
+    })
+});
+app.get("/users/filtered", (req, res) => {
+    db.all(`SELECT * FROM users WHERE email LIKE "%@real.weed%"`, (err, rows) => {
+        if (err) {
+            res.status(500).json({  error: err.message  })
+        }
+        console.log("data fetched", rows);
+        res.json(rows);
+    })
+});
+app.get("/users/asc", (req, res) => {
+    db.all("SELECT * FROM users ORDER BY name ASC;", (err, rows) => {
+        if (err) {
+            res.status(500).json({  error: err.message  })
+        }
+        console.log("data fetched", rows);
+        res.json(rows);
+    })
+});
+app.get("/users/desc", (req, res) => {
+    db.all("SELECT * FROM users ORDER BY name DESC;", (err, rows) => {
         if (err) {
             res.status(500).json({  error: err.message  })
         }
